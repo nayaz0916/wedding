@@ -30,12 +30,15 @@
   #qrcode { 
     padding: 10px; 
     border-radius: 15px; 
-    box-shadow: 0 0 20px #ff4081, 0 0 40px #ff4081, 0 0 60px #ff4081 inset;
-    animation: glow 1.5s infinite alternate;
+    animation: rainbowGlow 3s infinite alternate;
   }
-  @keyframes glow {
+  @keyframes rainbowGlow {
     0% { box-shadow: 0 0 20px #ff4081, 0 0 40px #ff4081, 0 0 60px #ff4081 inset; }
-    50% { box-shadow: 0 0 25px #ff4081, 0 0 50px #ff4081, 0 0 70px #ff4081 inset; }
+    16% { box-shadow: 0 0 20px #ff5722, 0 0 40px #ff5722, 0 0 60px #ff5722 inset; }
+    33% { box-shadow: 0 0 20px #ffc107, 0 0 40px #ffc107, 0 0 60px #ffc107 inset; }
+    50% { box-shadow: 0 0 20px #4CAF50, 0 0 40px #4CAF50, 0 0 60px #4CAF50 inset; }
+    66% { box-shadow: 0 0 20px #2196F3, 0 0 40px #2196F3, 0 0 60px #2196F3 inset; }
+    83% { box-shadow: 0 0 20px #9C27B0, 0 0 40px #9C27B0, 0 0 60px #9C27B0 inset; }
     100% { box-shadow: 0 0 20px #ff4081, 0 0 40px #ff4081, 0 0 60px #ff4081 inset; }
   }
   button { 
@@ -112,7 +115,7 @@ function spinWheel() {
       resultDiv.innerHTML = finalResult.replace(/\n/g, '<br>');
       launchConfetti();
 
-      // Show QR code with glowing effect after spin
+      // Show QR code with rainbow glow after spin
       setTimeout(() => {
         qrContainer.style.display = 'flex';
         new QRCode(qrDiv, {
