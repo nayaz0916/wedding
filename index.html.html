@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding RSVP Spinner</title>
+<style>
+  body { 
+    font-family: 'Segoe UI', sans-serif; 
+    text-align: center; 
+    background: linear-gradient(to right, #fceabb, #f8b500); 
+    color: #333; 
+  }
+  h1 { margin-top: 50px; }
+  #spinner { font-size: 2rem; margin: 50px 0; }
+  #result { font-size: 1.5rem; margin-top: 30px; }
+  #qrcode-container { 
+    margin-top: 30px; 
+    display: none; 
+    flex-direction: column; 
+    align-items: center; 
+  }
+  #qrcode-label { 
+    font-size: 1.3rem; 
+    font-weight: bold; 
+    margin-bottom: 10px; 
+    color: #d84315;
+    text-shadow: 1px 1px 3px #fff, 0 0 10px #ff5722, 0 0 20px #ff9800;
+  }
+  #qrcode { 
+    padding: 10px; 
+    border-radius: 15px; 
+    box-shadow: 0 0 20px #ff4081, 0 0 40px #ff4081, 0 0 60px #ff4081 inset;
+    animation: glow 1.5s infinite alternate;
+  }
+  @keyframes glow {
+    0% { box-shadow: 0 0 20px #ff4081, 0 0 40px #ff4081, 0 0 60px #ff4081 inset; }
+    50% { box-shadow: 0 0 25px #ff4081, 0 0 50px #ff4081, 0 0 70px #ff4081 inset; }
+    100% { box-shadow: 0 0 20px #ff4081, 0 0 40px #ff4081, 0 0 60px #ff4081 inset; }
+  }
+  button { 
+    padding: 15px 30px; 
+    font-size: 1.2rem; 
+    background-color: #4CAF50; 
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+  }
+  button:hover { 
+    background-color: #45a049; 
+    transform: scale(1.05); 
+  }
+  .confetti { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    pointer-events: none; 
+  }
+</style>
+</head>
+<body>
+
+<h1>🎉 Spin to Reveal Your RSVP! 🎉</h1>
+<div id="spinner">🌀</div>
+<button onclick="spinWheel()">Spin Now!</button>
+<div id="result"></div>
+
+<div id="qrcode-container">
+  <div id="qrcode-label">🎉 Scan to see Nayaz’s Marriage Invitation 🎉</div>
+  <div id="qrcode"></div>
+</div>
+
+<canvas class="confetti" id="confettiCanvas"></canvas>
+
+<!-- QRCode.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const results = [
+  'Yes ✅\nMeal Choice: Veggie 🥗 / Chicken 🍗 / Dessert 🍰',
+  'Yes ✅\nWedding Mood: Celebrate 🎉 / Bless & Cheer 🙏 / Dance Floor Ready 💃',
+  'Yes ✅\nFun Role: Chief Selfie Officer 📸 / Snack Supervisor 🍩 / Dance Champion 💃',
+  'Yes ✅\nSeating: Front Row VIP 🎉 / Table with Friends 🥂 / Garden View 🌸'
+];
+
+// Wedding invitation URL
+const weddingInvitationURL = 'https://drive.google.com/file/d/1vM78OatI6mRHUajhzDaVoN_XRzfDJVSn/view?usp=sharing';
+
+function spinWheel() {
+  const spinner = document.getElementById('spinner');
+  const resultDiv = document.getElementById('result');
+  const qrContainer = document.getElementById('qrcode-container');
+  const qrDiv = document.getElementById('qrcode');
+
+  qrContainer.style.display = 'none'; // hide QR code initially
+  qrDiv.innerHTML = ''; // clear old QR code
+
+  spinner.innerText = '🌀';
+  resultDiv.innerText = '';
+  let count = 0;
+
+  const interval = setInterval(() => {
+    spinner.innerText = results[Math.floor(Math.random() * results.length)];
+    count++;
+    if(count > 20){
+      clearInterval(interval);
+      spinner.innerText = '';
+      const finalResult = results[Math.floor(Math.random() * results.length)];
+      resultDiv.innerHTML = finalResult.replace(/\n/g, '<br>');
+      launchConfetti();
+
+      // Show QR code with glowing effect after spin
+      setTimeout(() => {
+        qrContainer.style.display = 'flex';
+        new QRCode(qrDiv, {
+          text: weddingInvitationURL,
+          width: 180,
+          height: 180,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+        });
+      }, 500);
+    }
+  }, 100);
+}
+
+// Confetti animation
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const confettiPieces = [];
+  const colors = ['#FFC107','#FF5722','#4CAF50','#2196F3','#9C27B0'];
+
+  for(let i=0;i<150;i++){
+    confettiPieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      r: Math.random() * 6 + 4,
+      d: Math.random() * 40 + 10,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      tilt: Math.random() * 10 - 10,
+      tiltAngle: 0,
+      tiltAngleIncrement: Math.random() * 0.07 + 0.05
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettiPieces.forEach(p => {
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.color;
+      ctx.moveTo(p.x + p.tilt + p.r/2, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r/2);
+      ctx.stroke();
+    });
+    update();
+  }
+
+  function update(){
+    confettiPieces.forEach(p => {
+      p.tiltAngle += p.tiltAngleIncrement;
+      p.y += (Math.cos(p.d) + 3 + p.r/2)/2;
+      p.tilt = Math.sin(p.tiltAngle) * 15;
+      if(p.y > canvas.height) p.y = -10;
+    });
+  }
+
+  const animation = setInterval(draw, 20);
+  setTimeout(()=>{ 
+    clearInterval(animation); 
+    ctx.clearRect(0,0,canvas.width,canvas.height); 
+  }, 7000);
+}
+</script>
+
+</body>
+</html>
